@@ -1,0 +1,187 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vacation Voter</title>
+<style>
+:root{--sz:16px;--c1:#3a5028;--c2:#4a6830;--c3:#2a1f14;--c4:#f8f3ea;--c5:#e8e0d0;--c6:#7a6a50;--c7:#c4883c;--c8:#ddd4c0;--c9:#f0ebe0;--rad:8px}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:system-ui,-apple-system,sans-serif;background:#1a1408;color:var(--c3);line-height:1.7;min-height:100vh;font-size:var(--sz)}
+.app{max-width:540px;margin:0 auto;min-height:100vh;background:var(--c4);box-shadow:0 0 60px rgba(0,0,0,.5)}
+.tsz{position:sticky;top:0;z-index:300;background:var(--c3);display:flex;align-items:center;justify-content:flex-end;padding:6px 16px;gap:8px}
+.tsz span{font-size:11px;color:#c8a878;text-transform:uppercase;font-weight:600}
+.tsz button{width:32px;height:32px;border-radius:6px;border:1px solid #5a4020;background:#3a2810;color:#e8d4b0;font-size:16px;font-weight:700;cursor:pointer}
+.tsz .sl{font-size:12px;color:#d4b888;font-weight:600;min-width:36px;text-align:center}
+.hdr{background:linear-gradient(135deg,var(--c1),#1e3018);padding:24px 20px 20px;text-align:center;border-bottom:3px solid #1a2810}
+.hdr h1{font-size:1.6em;font-weight:800;color:#f4eed4;text-shadow:0 2px 4px rgba(0,0,0,.3)}
+.hdr .sub{font-size:.8em;color:#b8c8a0;margin-top:4px}
+.hdr .acc{font-size:.85em;margin-top:6px}
+#syn{font-size:.7em;color:#8aaa60;margin-top:4px}
+#syn.off{color:var(--c7)}
+.vbar{background:#fff;border-bottom:2px solid var(--c5);padding:12px 16px;display:flex;align-items:center;gap:8px;overflow-x:auto}
+.vbar .lbl{font-size:.75em;font-weight:700;color:#6a5a40;text-transform:uppercase;white-space:nowrap}
+.chip{padding:6px 12px;border-radius:20px;font-size:.78em;font-weight:600;background:var(--c9);color:#4a3a20;cursor:pointer;border:2px solid var(--c8);white-space:nowrap;display:flex;align-items:center;gap:4px}
+.chip:hover{background:var(--c5)}
+.chip.on{background:var(--c1);color:#fff;border-color:#2e4420}
+input[name="nav"]{display:none}
+.nav{display:flex;background:#fff;border-bottom:2px solid var(--c5)}
+.nav label{flex:1;text-align:center;padding:14px 3px;font-size:.72em;font-weight:700;color:var(--c6);cursor:pointer;border-bottom:3px solid transparent}
+#np:checked~.nav label[for=np],#nc:checked~.nav label[for=nc],#ns:checked~.nav label[for=ns],#nr:checked~.nav label[for=nr],#nm:checked~.nav label[for=nm],#ng:checked~.nav label[for=ng]{color:var(--c1);border-bottom-color:var(--c2);background:#f0f4e8}
+.pg{display:none;padding:20px}
+#np:checked~.pp{display:block}#nc:checked~.pc{display:block}#ns:checked~.ps{display:block}#nr:checked~.pr{display:block}#nm:checked~.pm{display:block}#ng:checked~.pgd{display:block}
+.card{background:#fff;border:1px solid var(--c8);border-radius:12px;padding:20px;margin-bottom:14px;box-shadow:0 2px 8px rgba(40,30,10,.05)}
+.card h3{font-size:1.1em;font-weight:700}
+.meta{font-size:.8em;color:var(--c6);margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.tag{padding:2px 8px;border-radius:4px;font-size:.72em;font-weight:700;text-transform:uppercase}
+.tag.act{background:#e4f0d8;color:#2a5018}.tag.din{background:#f8ece0;color:#7a4a20}
+.ri{font-size:.85em;color:#6a5a40;font-style:italic;margin-bottom:12px;padding:8px 12px;background:#f8f4ea;border-radius:6px;border-left:3px solid var(--c7)}
+.vo{display:flex;align-items:center;gap:10px;padding:12px 14px;border:2px solid var(--c5);border-radius:var(--rad);margin-bottom:8px;cursor:pointer;position:relative}
+.vo:hover{border-color:#8aaa60;background:#f8faf4}
+.vo.rk{border-color:var(--c2);background:#f0f8e8}
+.vo.vt{border-color:#c04030;background:#fdf0ee;opacity:.6;cursor:not-allowed}
+.rb{min-width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8em;font-weight:700;background:var(--c5);color:var(--c6)}
+.vo.rk .rb{background:var(--c2);color:#fff}
+.rb.r1{background:var(--c7);color:#fff}.rb.r2{background:#8a7040;color:#fff}.rb.r3{background:#6a8050;color:#fff}
+.ot{flex:1;font-size:1em;font-weight:500}.ot.vtt{text-decoration:line-through;color:#8a7a60}
+.ol{display:block;font-size:.78em;color:#4a7a90;margin-top:3px;text-decoration:none;word-break:break-all}
+.vs{min-width:36px;height:28px;background:var(--c9);color:#6a5a40;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:.8em;font-weight:700}
+.vo.rk .vs{background:var(--c2);color:#fff}
+.vb{position:absolute;top:8px;right:8px;width:24px;height:24px;border-radius:4px;border:none;background:#fde8e8;color:#c04030;font-size:12px;font-weight:700;cursor:pointer;opacity:.6}
+.vb:hover{opacity:1}
+.sb{height:4px;background:var(--c5);border-radius:2px;margin-top:6px;overflow:hidden}
+.sf{height:100%;background:linear-gradient(90deg,var(--c2),#8aaa60);border-radius:2px;transition:width .4s}
+.inp{width:100%;padding:12px;border:2px solid #d4c8a8;border-radius:var(--rad);font-size:.95em;font-family:inherit;background:#fff;outline:none;color:var(--c3)}
+.inp:focus{border-color:var(--c2);box-shadow:0 0 0 3px rgba(74,104,48,.12)}
+.inp::placeholder{color:#a09078;font-style:italic}
+.sel{width:100%;padding:12px;border:2px solid #d4c8a8;border-radius:var(--rad);font-size:.95em;font-family:inherit;background:#fff;outline:none}
+.fg{margin-bottom:16px}.fg>label{display:block;font-size:.8em;font-weight:700;color:var(--c1);margin-bottom:8px;text-transform:uppercase}
+.btn{display:inline-block;padding:13px 24px;background:var(--c2);color:#fff;border:none;border-radius:var(--rad);font-size:.9em;font-weight:700;font-family:inherit;cursor:pointer;margin-right:8px;margin-bottom:8px}
+.btn:hover{background:var(--c1)}
+.btn.cb{background:linear-gradient(135deg,#8b5e34,var(--c7))}
+.emg{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:10px}
+.emo{width:100%;aspect-ratio:1;border:2px solid var(--c5);border-radius:10px;background:#fff;font-size:1.5em;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.emo:hover{border-color:#8aaa60;transform:scale(1.05)}
+.emo.sel{border-color:var(--c2);background:#e8f4d8}
+.rrow{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--c9)}
+.rrow:last-child{border-bottom:none}
+.wb{display:inline-block;padding:3px 10px;background:linear-gradient(135deg,var(--c7),#8b5e34);color:#fff;font-size:.7em;font-weight:700;border-radius:4px;margin-left:8px}
+.stit{font-size:.8em;font-weight:700;color:#6a5a40;text-transform:uppercase;margin-bottom:12px}
+.empty{text-align:center;padding:48px 20px;color:#8a7a60}
+.cbtn{font-size:.75em;padding:5px 10px;border-radius:4px;background:var(--c9);color:#6a5a40;border:1px solid var(--c8);cursor:pointer;font-weight:600}
+.badge{display:inline-block;min-width:18px;height:18px;background:var(--c7);color:#fff;border-radius:9px;font-size:.65em;font-weight:700;text-align:center;line-height:18px;margin-left:4px}
+.gs{background:#fff;border:1px solid var(--c8);border-radius:12px;padding:20px;margin-bottom:16px}
+.gs h2{font-size:1.1em;font-weight:700;color:#2e4420;margin-bottom:12px}
+.gs p,.gs li{font-size:.9em;color:#3a3020;margin-bottom:8px}
+.gs ol,.gs ul{padding-left:20px;margin-bottom:12px}
+.gt{background:#f8f4ea;border-left:3px solid var(--c7);padding:10px 14px;border-radius:0 8px 8px 0;font-size:.85em;color:#5a4a30;margin:10px 0;font-style:italic}
+.sact{display:flex;gap:6px;margin-top:10px}
+.sact button{padding:6px 12px;border:none;border-radius:6px;font-size:.78em;font-weight:700;cursor:pointer}
+.sact .ap{background:var(--c2);color:#fff}.sact .dm{background:var(--c9);color:#6a5a40;border:1px solid var(--c8)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--c3);color:#e8d4b0;padding:14px 24px;border-radius:var(--rad);font-size:.95em;opacity:0;transition:all .3s;z-index:999}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="tsz"><span>Text Size</span><button id="szD">A-</button><span class="sl" id="szL">100%</span><button id="szU">A+</button></div>
+<div class="hdr"><h1>🏕️ Vacation Voter</h1><div class="sub">Clarkson, KY · 2026</div><div class="acc">🌲 🦌 🔥 🛶 🌲</div><div id="syn">🟢 Live syncing</div></div>
+<div class="vbar"><span class="lbl">I am:</span><div id="chips" style="display:flex;gap:6px;overflow-x:auto"></div></div>
+<input type="radio" name="nav" id="np" checked><input type="radio" name="nav" id="nc"><input type="radio" name="nav" id="ns"><input type="radio" name="nav" id="nr"><input type="radio" name="nav" id="nm"><input type="radio" name="nav" id="ng">
+<div class="nav"><label for="np">🗳️ Vote</label><label for="nc">✨ New</label><label for="ns" id="slbl">💡 Ideas</label><label for="nr">🏆 Results</label><label for="nm">😊 Me</label><label for="ng">📖 Help</label></div>
+<div class="pg pp" id="pP"></div>
+<div class="pg pc" id="pC"></div>
+<div class="pg ps" id="pS"></div>
+<div class="pg pr" id="pR"></div>
+<div class="pg pm" id="pM"></div>
+<div class="pg pgd" id="pG"></div>
+<div class="toast" id="toast"></div>
+</div>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+(function(){
+var db,FB=false;
+try{firebase.initializeApp({apiKey:"AIzaSyBuKDlmYzZ8FstzOjFymyq-ogbjFrQxuYE",authDomain:"vacation-voter.firebaseapp.com",projectId:"vacation-voter",storageBucket:"vacation-voter.firebasestorage.app",messagingSenderId:"271441057368",appId:"1:271441057368:web:d53bda00463f45bf145c2d"});db=firebase.firestore();FB=true}catch(e){document.getElementById('syn').textContent='🟡 Offline';document.getElementById('syn').classList.add('off')}
+var V=['Rabbit','Jack','Susan','Taylor','Jason','Sam','Ben','Penny'],A=['Rabbit','Taylor','Jason','Susan'],EM=['🐇','🐻','🦊','🐺','🦉','🦌','🐿️','🌻','🍄','🌲','🔥','⭐','🛶','🎣','🦅','🐸','🪵','🌙','🐝','🦋','🌸','🍂','🎯','🐾'];
+var cur=localStorage.getItem('vv-c')||'Rabbit',avs=JSON.parse(localStorage.getItem('vv-a')||'{}'),polls=[],suggs=[],bOpts=[{t:'',u:''},{t:'',u:''}];
+if(!avs.Rabbit)avs.Rabbit='🐇';
+function esc(s){var d=document.createElement('div');d.textContent=s;return d.innerHTML}
+function ea(s){return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;')}
+function cu(u){var c=u.replace(/^https?:\/\/(www\.)?/,'');return c.length>36?c.slice(0,36)+'...':c}
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},2500)}
+function isA(n){return A.indexOf(n)!==-1}
+function av(n){return avs[n]||'😊'}
+var _d={};function deb(k,fn){clearTimeout(_d[k]);_d[k]=setTimeout(fn,300)}
+function savePoll(p){if(FB)db.collection('polls').doc(String(p.id)).set(p);else localStorage.setItem('vv-p',JSON.stringify(polls))}
+function delPoll(id){if(FB)db.collection('polls').doc(String(id)).delete();else localStorage.setItem('vv-p',JSON.stringify(polls))}
+function saveSuggs(){if(FB)db.collection('config').doc('suggestions').set({data:suggs});else localStorage.setItem('vv-s',JSON.stringify(suggs))}
+function saveAv(){localStorage.setItem('vv-a',JSON.stringify(avs));if(FB)db.collection('config').doc('avatars').set(avs)}
+var sz=parseInt(localStorage.getItem('vv-z')||'100');
+function appSz(){document.documentElement.style.setProperty('--sz',(16*sz/100)+'px');document.getElementById('szL').textContent=sz+'%';localStorage.setItem('vv-z',String(sz))}
+document.getElementById('szU').onclick=function(){if(sz<150){sz+=10;appSz()}};
+document.getElementById('szD').onclick=function(){if(sz>80){sz-=10;appSz()}};
+appSz();
+function chips(){document.getElementById('chips').innerHTML=V.map(function(v){return'<span class="chip'+(v===cur?' on':'')+'" data-v="'+ea(v)+'">'+av(v)+' '+esc(v)+(isA(v)?' ⭐':'')+'</span>'}).join('')}
+document.getElementById('chips').addEventListener('click',function(e){var c=e.target.closest('.chip');if(!c)return;cur=c.dataset.v;localStorage.setItem('vv-c',cur);chips();renderAll();toast('Voting as '+cur+' 🤙')});
+function sc(p){var s={};p.options.forEach(function(o){if(!o.vetoed)s[o.text]=0});if(p.rankings)Object.values(p.rankings).forEach(function(r){r.forEach(function(t,i){if(s[t]!==undefined)s[t]+=(3-i)})});return s}
+function rPolls(){var op=polls.filter(function(p){return!p.closed}),c=document.getElementById('pP'),ad=isA(cur);
+if(!op.length){c.innerHTML='<div class="empty"><p>No open polls yet! 🏕️<br>Create one on ✨ New tab.</p></div>';return}
+c.innerHTML=op.map(function(p){var my=(p.rankings&&p.rankings[cur])||[],s=sc(p),mx=Math.max.apply(null,Object.values(s).concat([1]));
+var h='<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><h3>'+esc(p.question)+'</h3>';
+if(ad)h+='<button class="cbtn" data-a="cl" data-id="'+p.id+'">Close</button>';
+h+='</div><div class="meta"><span class="tag '+(p.type==='dinner'?'din':'act')+'">'+(p.type==='dinner'?'🍽️ Dinner':'🥾 Activity')+'</span><span>'+Object.keys(p.rankings||{}).length+'/8 voted</span></div>';
+h+='<div class="ri">Tap your top 3 in order (1st, 2nd, 3rd)</div>';
+p.options.forEach(function(o,oi){var ri=my.indexOf(o.text),rk=ri!==-1,vt=o.vetoed,pts=s[o.text]||0,pct=Math.round((pts/mx)*100);
+h+='<div class="vo'+(rk?' rk':'')+(vt?' vt':'')+'" data-pid="'+p.id+'" data-ot="'+ea(o.text)+'" data-vt="'+vt+'">';
+h+='<span class="rb'+(rk?' r'+(ri+1):'')+'">'+(vt?'🚫':(rk?(ri+1):'·'))+'</span>';
+h+='<div style="flex:1"><div class="ot'+(vt?' vtt':'')+'">'+esc(o.text)+'</div>';
+if(o.url)h+='<a href="'+ea(o.url)+'" class="ol" target="_blank" rel="noopener">🔗 '+esc(cu(o.url))+'</a>';
+if(!vt)h+='<div class="sb"><div class="sf" style="width:'+pct+'%"></div></div>';
+h+='</div>';
+if(!vt)h+='<span class="vs">'+pts+'pt</span>';
+if(ad&&!vt)h+='<button class="vb" data-a="vt" data-pid="'+p.id+'" data-oi="'+oi+'">✕</button>';
+h+='</div>'});return h+'</div>'}).join('')}
+document.getElementById('pP').addEventListener('click',function(e){
+var vb=e.target.closest('[data-a="vt"]');if(vb){e.stopPropagation();doVeto(parseInt(vb.dataset.pid),parseInt(vb.dataset.oi));return}
+var cb=e.target.closest('[data-a="cl"]');if(cb){doClose(parseInt(cb.dataset.id));return}
+if(e.target.closest('.ol'))return;
+var vo=e.target.closest('.vo');if(vo&&vo.dataset.vt==='false')doVote(parseInt(vo.dataset.pid),vo.dataset.ot)});
+function doVote(pid,ot){var p=polls.find(function(x){return x.id===pid});if(!p||p.closed)return;
+if(!p.rankings)p.rankings={};if(!p.rankings[cur])p.rankings[cur]=[];
+var r=p.rankings[cur],i=r.indexOf(ot);
+if(i!==-1)r.splice(i,1);else if(r.length<3)r.push(ot);else{toast('Top 3 only!');return}
+deb('s'+pid,function(){savePoll(p)});if(!FB){rPolls();rRes()}}
+function doVeto(pid,oi){var p=polls.find(function(x){return x.id===pid});if(!p)return;p.options[oi].vetoed=true;var txt=p.options[oi].text;
+if(p.rankings)Object.keys(p.rankings).forEach(function(v){p.rankings[v]=p.rankings[v].filter(function(t){return t!==txt})});
+savePoll(p);if(!FB){rPolls();rRes()}toast('Vetoed! 🚫')}
+function doClose(id){var p=polls.find(function(x){return x.id===id});if(p){p.closed=true;savePoll(p);if(!FB){rPolls();rRes()}toast('Closed! 🏆')}}
+function rCreate(){var c=document.getElementById('pC');
+if(!isA(cur)){c.innerHTML='<div class="empty">Only admins can create polls.<br>Suggest ideas on 💡 Ideas!</div>';return}
+c.innerHTML='<div class="fg"><label>What are we deciding?</label><input class="inp" id="pQ" placeholder="e.g. What hike tomorrow?"></div><div class="fg"><label>Type</label><select class="sel" id="pT"><option value="activity">🥾 Activity</option><option value="dinner">🍽️ Dinner</option></select></div><div class="fg"><label>Options</label><div id="oI"></div><button class="btn" id="aO" style="background:transparent;color:#6a5a40;border:2px dashed #c4b898">+ Add Option</button></div><button class="btn cb" id="mP">🔥 Create Poll</button>';rOpts()}
+document.getElementById('pC').addEventListener('click',function(e){
+if(e.target.id==='aO'){bOpts.push({t:'',u:''});rOpts()}
+if(e.target.id==='mP'){var q=document.getElementById('pQ').value.trim(),ty=document.getElementById('pT').value,vl=bOpts.filter(function(o){return o.t.trim()});
+if(!q){toast('Add a question!');return}if(vl.length<2){toast('Need 2+ options!');return}
+var np={id:Date.now(),question:q,type:ty,closed:false,options:vl.map(function(o){return{text:o.t.trim(),url:o.u.trim()||undefined,vetoed:false}}),rankings:{}};
+polls.unshift(np);savePoll(np);document.getElementById('pQ').value='';bOpts=[{t:'',u:''},{t:'',u:''}];rOpts();document.getElementById('np').checked=true;if(!FB){rPolls();rRes()}toast('Poll created! 🔥')}
+var rb=e.target.closest('.ro');if(rb){bOpts.splice(parseInt(rb.dataset.i),1);rOpts()}});
+document.getElementById('pC').addEventListener('input',function(e){if(e.target.classList.contains('oni'))bOpts[parseInt(e.target.dataset.i)].t=e.target.value;if(e.target.classList.contains('oui'))bOpts[parseInt(e.target.dataset.i)].u=e.target.value});
+function rOpts(){var c=document.getElementById('oI');if(!c)return;
+c.innerHTML=bOpts.map(function(o,i){return'<div style="background:#faf6ef;border:1px solid #e0d8c4;border-radius:8px;padding:10px;margin-bottom:8px"><div style="display:flex;gap:8px;align-items:center;margin-bottom:4px"><input class="inp oni" value="'+ea(o.t)+'" placeholder="Option '+(i+1)+'..." data-i="'+i+'" style="padding:10px">'+(bOpts.length>2?'<button class="ro" data-i="'+i+'" style="width:28px;height:28px;border:none;border-radius:6px;background:#fde8e8;color:#c04030;font-size:16px;cursor:pointer">x</button>':'')+'</div><input class="inp oui" value="'+ea(o.u||'')+'" placeholder="🔗 Link (optional)" data-i="'+i+'" style="padding:8px;font-size:.85em;color:#4a7a90"></div>'}).join('')}
+function rRes(){var c=document.getElementById('pR'),op=polls.filter(function(p){return!p.closed}),cl=polls.filter(function(p){return p.closed}),ad=isA(cur),h='';
+if(op.length){h+='<div class="stit">📊 Live Standings</div>';op.forEach(function(p){h+=resC(p,false,ad)})}
+if(cl.length){h+='<div class="stit" style="margin-top:20px">🏆 Final Results</div>';cl.forEach(function(p){h+=resC(p,true,ad)})}
+if(!polls.length)h='<div class="empty">No results yet! 🏕️</div>';c.innerHTML=h}
+document.getElementById('pR').addEventListener('click',function(e){var d=e.target.closest('[data-a="del"]');if(d){var id=parseInt(d.dataset.id);polls=polls.filter(function(p){return p.id!==id});delPoll(id);if(!FB){rPolls();rRes()}toast('Deleted')}});
+function resC(p,closed,ad){var s=sc(p),sorted=p.options.filter(function(o){return!o.vetoed}).map(function(o){return{text:o.text,score:s[o.text]||0}}).sort(function(a,b){return b.score-a.score});
+var h='<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;gap:8px"><h3>'+esc(p.question)+(closed?' <span style="font-size:.7em;background:#f0e8d8;color:#7a5a30;padding:2px 8px;border-radius:4px">CLOSED</span>':'')+'</h3>';
+if(closed&&ad)h+='<button class="cbtn" data-a="del" data-id="'+p.id+'" style="color:#c04030">Delete</button>';h+='</div>';
+sorted.forEach(function(o,i){var w=i===0&&o.score>0&&(sorted.length===1||o.score>sorted[1].score);
+h+='<div class="rrow"><span style="font-size:.85em;font-weight:700;color:var(--c2);min-width:20px">'+(i+1)+'.</span><span style="flex:1;font-size:.95em">'+esc(o.text)+(w?'<span class="wb">Winner!</span>':'')+'</span><span style="font-size:.85em;font-weight:700;background:var(--c9);padding:4px 10px;border-radius:12px">'+o.score+' pts</span></div>'});
+var vt=p.options.filter(function(o){return o.vetoed});
+if(vt.length)h+='<div style="margin-top:10px;font-size:.8em;color:#8a6040;font-style:italic">🚫 Vetoed: '+vt.map(function(o){return esc(o.text)}).join(', ')+'</div>';
+return h+'</div>'}
+function rSuggs(){var c=document.getElementById('pS'),ad=isA(cur),pend=suggs.filter(function(s){return s.status==='pending'});
+document.getElementById('slbl').innerHTML=pend.length?'💡 Ideas <span class="badge">'+pend.length+'<
